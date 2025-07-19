@@ -1,6 +1,3 @@
-//const axios = require('axios');
-//const winston = require('winston');
-//const axios = require('axios'); // npm install axios
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
