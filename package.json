@@ -1,0 +1,19 @@
+{
+  "name": "xecm",
+  "version": "1.0.0",
+  "description": "Simple Python library to call Opentext Extended ECM REST API",
+  "main": "CSRestAPI.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "xecm",
+    "opentext",
+    "extendedecm",
+    "contentserver",
+    "otcs",
+    "otds"
+  ],
+  "author": "Philipp Egger",
+  "license": "MIT"
+}
