@@ -6522,9 +6522,6 @@ class CSRestAPI {
     }
     return retval;
   }
-
-
-
 }
 
 module.exports = {
