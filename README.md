@@ -1,6 +1,6 @@
 # XECM
 
-This nodejs library calls the Opentext Extended ECM REST API.
+This nodejs library calls the Opentext Extended ECM REST API without using any 3rd party libraries.
 The API documentation is available on [OpenText Developer](https://developer.opentext.com/ce/products/extendedecm)
 A detailed documentation of this package is available [on GitHub](https://github.com/fitschgo/xecm_js).
 Our Homepage is: [xECM SuccessFactors Knowledge](https://www.xecm-successfactors.com/xecm-knowledge.html)
@@ -40,9 +40,9 @@ async function mainProg() {
 
     // ...
 
-    let nodeId = 130480
+    let nodeId = 182771;
     try {
-        let res = csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name', 'type', 'type_name'], false, false, false);
+        let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name', 'type', 'type_name'], false, false, false);
         console.log(res);
         // {
         //   'properties': {'id': 130480, 'name': 'Bewerbung-Phil-Egger-2020.pdf', 'type': 144, 'type_name': 'Document'}, 
@@ -82,67 +82,67 @@ mainProg();
 ## Node Functions (folder, document, ...)
 ```js
     // get node information - min -> load only some fields
-    let res = csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name', 'type', 'type_name'], false, false, false);
+    let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name', 'type', 'type_name'], false, false, false);
 
     // get node information - max -> load all fields, incl. categories, incl. permissions, incl. classifications
-    let res = csapi.node_get(`${cshost}${cspath}`, nodeId, [], true, true, true);
+    let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, [], true, true, true);
 
     // get sub nodes - min
-    let res = csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, false, 1);  // page 1 contains 200 sub items
+    let res = await csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, false, 1);  // page 1 contains 200 sub items
 
     // get sub nodes - load categories
-    let res = csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], true, false, false, 1);  // page 1 contains 20 sub items
+    let res = await csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], true, false, false, 1);  // page 1 contains 20 sub items
 
     // get sub nodes - load permissions
-    let res = csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, true, false, 1);  // page 1 contains 20 sub items
+    let res = await csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, true, false, 1);  // page 1 contains 20 sub items
 
     // get sub nodes - load classifications
-    let res = csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, true, 1);  // page 1 contains 10 sub items
+    let res = await csapi.subnodes_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, true, 1);  // page 1 contains 10 sub items
 
     // filter subnodes
-    let res = csapi.subnodes_filter(`${cshost}${cspath}`, 30622, 'OTHCM_WS_Employee_Categories', false, true);
+    let res = await csapi.subnodes_filter(`${cshost}${cspath}`, 30622, 'OTHCM_WS_Employee_Categories', false, true);
 
     // search nodes
-    let res = csapi.search(`${cshost}${cspath}`, 'Documents', 0, baseFolderId, 1);
+    let res = await csapi.search(`${cshost}${cspath}`, 'Documents', 0, baseFolderId, 1);
 
     // get details of several nodes - max 250 entries
-    let res = csapi.nodes_get_details(`${cshost}${cspath}`, [ 30724, 30728, 30729 ]);
+    let res = await csapi.nodes_get_details(`${cshost}${cspath}`, [ 30724, 30728, 30729 ]);
 
     // create new node - min
-    let res = csapi.node_create(`${cshost}${cspath}`, parentId, 0, 'test', 'test', {}, {} );
+    let res = await csapi.node_create(`${cshost}${cspath}`, parentId, 0, 'test', 'test', {}, {} );
 
     // create new node - with multiple metadata names
-    let res = csapi.node_create(`${cshost}${cspath}`, nodeId, 0, 'test', 'test', { 'en': 'test en', 'de': 'test de'}, { 'en': 'desc en', 'de': 'desc de'} );
+    let res = await csapi.node_create(`${cshost}${cspath}`, nodeId, 0, 'test', 'test', { 'en': 'test en', 'de': 'test de'}, { 'en': 'desc en', 'de': 'desc de'} );
     
     // update name and description of a node (folder, document, ...) - min
-    let res = csapi.node_update(`${cshost}${cspath}`, nodeId, 0, 'test1', 'desc1', {}, {}, {});
+    let res = await csapi.node_update(`${cshost}${cspath}`, nodeId, 0, 'test1', 'desc1', {}, {}, {});
 
     // move node and apply categories
     let cats = { '1279234_2': 'test' }
-    let res = csapi.node_update(`${cshost}${cspath}`, nodeId, newDestId, '', '', {}, {}, cats);
+    let res = await csapi.node_update(`${cshost}${cspath}`, nodeId, newDestId, '', '', {}, {}, cats);
 
     // delete a node
-    let res = csapi.node_delete(`${cshost}${cspath}`, nodeId);
+    let res = await csapi.node_delete(`${cshost}${cspath}`, nodeId);
     
     // download a document into file system
-    let res = csapi.node_download_file(`${cshost}${cspath}`, nodeId, '', '/home/fitsch/Downloads', 'test-download.pdf');
+    let res = await csapi.node_download_file(`${cshost}${cspath}`, nodeId, '', '/home/fitsch/Downloads', 'test-download.pdf');
 
     // download a document as base64 string
-    let res = csapi.node_download_bytes(`${cshost}${cspath}`, nodeId, '');
+    let res = await csapi.node_download_bytes(`${cshost}${cspath}`, nodeId, '');
     // {'message', 'file_size', 'base64' }
 
     // upload a document from file system
-    let res = csapi.node_upload_file(`${cshost}${cspath}`, nodeId, '/home/fitsch/Downloads', 'test-download.pdf', 'test-upload.pdf', { '30724_2': '2020-03-17' });
+    let res = await csapi.node_upload_file(`${cshost}${cspath}`, nodeId, '/home/fitsch/Downloads', 'test-download.pdf', 'test-upload.pdf', { '30724_2': '2020-03-17' });
 
     // upload a document from byte array
     let barr = fs.readFileSync(path.join("/home/fitsch/Downloads/", "test-download5.pdf"));
-    let res = csapi.node_upload_bytes(`${cshost}${cspath}`, nodeId, barr, 'test-upload.pdf', {'30724_2': '2020-03-17'});
+    let res = await csapi.node_upload_bytes(`${cshost}${cspath}`, nodeId, barr, 'test-upload.pdf', {'30724_2': '2020-03-17'});
 
     // covert a Content Server path to a Node ID
-    let res = csapi.path_to_id(`${cshost}${cspath}`, 'Content Server Categories:SuccessFactors:OTHCM_WS_Employee_Categories:Personal Information');
+    let res = await csapi.path_to_id(`${cshost}${cspath}`, 'Content Server Categories:SuccessFactors:OTHCM_WS_Employee_Categories:Personal Information');
 
     // get all volumes in Content Server
-    let res = csapi.volumes_get(`${cshost}${cspath}`);
+    let res = await csapi.volumes_get(`${cshost}${cspath}`);
     // [
     // {
     //   'properties': 
@@ -166,19 +166,19 @@ mainProg();
 ## Category Functions (Metadata)
 ```js
     // get node information and load categories
-    let res = csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], true, false, false);
+    let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], true, false, false);
 
     // add category to node
-    let res = csapi.node_category_add(`${cshost}${cspath}`, nodeId, { "category_id": 32133, "32133_2": "8000", "32133_39": ["test 1", "test 2"], "32133_33_1_34": "Org Unit 1", "32133_33_1_35": "Org Unit Desc 1", "32133_33_2_34": "Org Unit 2", "32133_33_2_35": "Org Unit Desc 2" } );
+    let res = await csapi.node_category_add(`${cshost}${cspath}`, nodeId, { "category_id": 32133, "32133_2": "8000", "32133_39": ["test 1", "test 2"], "32133_33_1_34": "Org Unit 1", "32133_33_1_35": "Org Unit Desc 1", "32133_33_2_34": "Org Unit 2", "32133_33_2_35": "Org Unit Desc 2" } );
 
     // update category on a node
-    let res = csapi.node_category_update(`${cshost}${cspath}`, nodeId, 32133, { "32133_2": "8000", "32133_39": ["test 1", "test 2"], "32133_33_1_34": "Org Unit 1", "32133_33_1_35": "Org Unit Desc 1", "32133_33_2_34": "Org Unit 2", "32133_33_2_35": "Org Unit Desc 2" } );
+    let res = await csapi.node_category_update(`${cshost}${cspath}`, nodeId, 32133, { "32133_2": "8000", "32133_39": ["test 1", "test 2"], "32133_33_1_34": "Org Unit 1", "32133_33_1_35": "Org Unit Desc 1", "32133_33_2_34": "Org Unit 2", "32133_33_2_35": "Org Unit Desc 2" } );
     
     // delete category from a node
-    let res = csapi.node_category_delete(`${cshost}${cspath}`, nodeId, 32133);
+    let res = await csapi.node_category_delete(`${cshost}${cspath}`, nodeId, 32133);
 
     // read all category attributes - use i.e. path_to_id() to get cat_id
-    let res = csapi.category_get_mappings(`${cshost}${cspath}`, cat_id);
+    let res = await csapi.category_get_mappings(`${cshost}${cspath}`, cat_id);
     // {
     //   'main_name': 'Job Information', 
     //   'main_id': 32133, 
@@ -197,7 +197,7 @@ mainProg();
     // }
     
     // get category information for a specific attribute
-    let res = csapi.category_attribute_id_get(`${cshost}${cspath}`, 'Content Server Categories:SuccessFactors:OTHCM_WS_Employee_Categories:Personal Information', 'User ID');
+    let res = await csapi.category_attribute_id_get(`${cshost}${cspath}`, 'Content Server Categories:SuccessFactors:OTHCM_WS_Employee_Categories:Personal Information', 'User ID');
     // {
     //   'category_id': 30643, 
     //   'category_name': 'Personal Information', 
@@ -209,19 +209,19 @@ mainProg();
 ## Classification Functions
 ```js
     // get node information and load classifications
-    let res = csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, true);
+    let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, false, true);
 
     // apply classifications to node
-    let res = csapi.node_classifications_apply(`${cshost}${cspath}`, nodeId, false, [120571,120570]);
+    let res = await csapi.node_classifications_apply(`${cshost}${cspath}`, nodeId, false, [120571,120570]);
     
     // same function to remove classification 120570 from node
-    let res = csapi.node_classifications_apply(`${cshost}${cspath}`, nodeId, false, [120571]);
+    let res = await csapi.node_classifications_apply(`${cshost}${cspath}`, nodeId, false, [120571]);
 ```
 
 ## Permission Functions
 ```js
     // get node information and load permissions
-    let res = csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, true, false);
+    let res = await csapi.node_get(`${cshost}${cspath}`, nodeId, ['id', 'name'], false, true, false);
 
     // apply owner permissions on node
     /*
@@ -243,63 +243,63 @@ mainProg();
     2 This Item and Sub-Items
     3 This Item And Immediate Sub-Items
     */
-    let res = csapi.node_permissions_owner_apply(`${cshost}${cspath}`, nodeId, { "permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"], "right_id": 1000 });
+    let res = await csapi.node_permissions_owner_apply(`${cshost}${cspath}`, nodeId, { "permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"], "right_id": 1000 });
 
     // delete owner permission from node
-    let res = csapi.node_permissions_owner_delete(`${cshost}${cspath}`, nodeId);
+    let res = await csapi.node_permissions_owner_delete(`${cshost}${cspath}`, nodeId);
 
     // apply group permissions on node
-    let res = csapi.node_permissions_group_apply(`${cshost}${cspath}`, nodeId, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"], "right_id": 2001 });
+    let res = await csapi.node_permissions_group_apply(`${cshost}${cspath}`, nodeId, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"], "right_id": 2001 });
 
     // delete group permission from node
-    let res = csapi.node_permissions_group_delete(`${cshost}${cspath}`, nodeId);
+    let res = await csapi.node_permissions_group_delete(`${cshost}${cspath}`, nodeId);
 
     // apply public permissions on node
-    let res = csapi.node_permissions_public_apply(`${cshost}${cspath}`, nodeId, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"] });
+    let res = await csapi.node_permissions_public_apply(`${cshost}${cspath}`, nodeId, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"] });
 
     // delete public permission from node
-    let res = csapi.node_permissions_public_delete(`${cshost}${cspath}`, nodeId);
+    let res = await csapi.node_permissions_public_delete(`${cshost}${cspath}`, nodeId);
 
     // apply a new custom permissions on node
-    let res = csapi.node_permissions_custom_apply(`${cshost}${cspath}`, nodeId, [{"permissions":["see","see_contents"], "right_id": 1001 }]);
+    let res = await csapi.node_permissions_custom_apply(`${cshost}${cspath}`, nodeId, [{"permissions":["see","see_contents"], "right_id": 1001 }]);
 
     // update an existing custom permissions on node
-    let res = csapi.node_permissions_custom_update(`${cshost}${cspath}`, nodeId, 2001, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"] });
+    let res = await csapi.node_permissions_custom_update(`${cshost}${cspath}`, nodeId, 2001, {"permissions":["delete","delete_versions","edit_attributes","edit_permissions","modify","reserve","see","see_contents"] });
 
     // delete a custom permissions from node
-    let res = csapi.node_permissions_custom_delete(`${cshost}${cspath}`, nodeId, 1001);
+    let res = await csapi.node_permissions_custom_delete(`${cshost}${cspath}`, nodeId, 1001);
 ```
 
 ## Smart Document Types Functions
 ```js
     // get all smart document types
-    let res = csapi.smartdoctypes_get_all(`${cshost}${cspath}`);
+    let res = await csapi.smartdoctypes_get_all(`${cshost}${cspath}`);
     for (let i=0; i<res.length; i++) {
         let smartdoctype = res[i];
         console.log(`${smartdoctype['workspace_template_names']} - ${smartdoctype['dataId']} - ${smartdoctype['name']} --> ${smartdoctype['classification_id']} - ${smartdoctype['classification_name']}`);
     }
 
     // get rules of a smart document type
-    smartDocTypeId = smartdoctype['dataId'];
-    let res = csapi.smartdoctypes_rules_get(`${cshost}${cspath}`, smartDocTypeId);
+    let smartDocTypeId = smartdoctype['dataId'];
+    let res = await csapi.smartdoctypes_rules_get(`${cshost}${cspath}`, smartDocTypeId);
     for (let i=0; i<res.length; i++) {
         let smartdoctype = res[i];
         console.log(`${smartdoctype['template_name']} (${smartdoctype['template_id']}) - ${smartdoctype['smartdocumenttype_id']} - RuleID: ${smartdoctype['rule_id']} / DocGen: ${smartdoctype['document_generation']} --> Classification: ${smartdoctype['classification_id']} --> Location: ${smartdoctype['location']}`);
     }
 
     // get rule detail
-    ruleId = smartdoctype['rule_id'];
-    let res = csapi.smartdoctype_rule_detail_get(`${cshost}${cspath}`, ruleId);
+    let ruleId = smartdoctype['rule_id'];
+    let res = await csapi.smartdoctype_rule_detail_get(`${cshost}${cspath}`, ruleId);
     for (let i=0; i<res.length; i++) {
         let rule_tabl = res[i];
         console.log(`tab: {rule_tab['bot_key']} - data: {rule_tab['data']}`);
     }
 
     // create smart document type under "Smart Document Types" root folder 6004 (id is different per system) -> see get_volumes() function
-    let res = csapi.smartdoctype_add(`${cshost}${cspath}`, 6004, categoryId, 'smart doc test');
+    let res = await csapi.smartdoctype_add(`${cshost}${cspath}`, 6004, categoryId, 'smart doc test');
 
     // add workspace template to rule
-    let res = csapi.smartdoctype_workspacetemplate_add(`${cshost}${cspath}`, smartDocTypeId, classificationId, templateId);
+    let res = await csapi.smartdoctype_workspacetemplate_add(`${cshost}${cspath}`, smartDocTypeId, classificationId, templateId);
     // {
     //   'is_othcm_template': true, 
     //   'ok': true, 
@@ -308,10 +308,10 @@ mainProg();
     // }
 
     // add workspace template to rule -> get locationId with path_to_id() function
-    let location = csapi.path_to_id(`${cshost}${cspath}`, 'Content Server Document Templates:SuccessFactors:Employee CHE:01 Entry Documents:110 Recruiting / Application');
+    let location = await csapi.path_to_id(`${cshost}${cspath}`, 'Content Server Document Templates:SuccessFactors:Employee CHE:01 Entry Documents:110 Recruiting / Application');
     // {'id': 120603, 'name': '110 Recruiting / Application'}
     let locationId = location['id'];
-    let res = csapi.smartdoctype_rule_context_save(`${cshost}${cspath}`, ruleId, categoryId, locationId, 'update');
+    let res = await csapi.smartdoctype_rule_context_save(`${cshost}${cspath}`, ruleId, categoryId, locationId, 'update');
     // {
     //   'ok': true, 
     //   'statusCode': 200, 
@@ -320,105 +320,105 @@ mainProg();
     // }
 
     // add 'mandatory' tab in rule
-    let res = csapi.smartdoctype_rule_mandatory_save(`${cshost}${cspath}`, ruleId, true, 'add');
+    let res = await csapi.smartdoctype_rule_mandatory_save(`${cshost}${cspath}`, ruleId, true, 'add');
 
     // update 'mandatory' tab in rule
-    let res = csapi.smartdoctype_rule_mandatory_save(`${cshost}${cspath}`, ruleId, false, 'update');
+    let res = await csapi.smartdoctype_rule_mandatory_save(`${cshost}${cspath}`, ruleId, false, 'update');
 
     // delete 'mandatory' tab in rule
-    let res = csapi.smartdoctype_rule_mandatory_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_mandatory_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'document expiration' tab in rule
-    let res = csapi.smartdoctype_rule_documentexpiration_save(`${cshost}${cspath}`, ruleId, true, 2, 0, 6, 'add');
+    let res = await csapi.smartdoctype_rule_documentexpiration_save(`${cshost}${cspath}`, ruleId, true, 2, 0, 6, 'add');
 
     // update 'document expiration' tab in rule
-    let res = csapi.smartdoctype_rule_documentexpiration_save(`${cshost}${cspath}`, ruleId, false, 2, 0, 4, 'update');
+    let res = await csapi.smartdoctype_rule_documentexpiration_save(`${cshost}${cspath}`, ruleId, false, 2, 0, 4, 'update');
 
     // delete 'document expiration' tab in rule
-    let res = csapi.smartdoctype_rule_documentexpiration_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_documentexpiration_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'document generation' tab in rule
-    let res = csapi.smartdoctype_rule_generatedocument_save(`${cshost}${cspath}`, ruleId, true, false, 'add');
+    let res = await csapi.smartdoctype_rule_generatedocument_save(`${cshost}${cspath}`, ruleId, true, false, 'add');
 
     // update 'document generation' tab in rule
-    let res = csapi.smartdoctype_rule_generatedocument_save(`${cshost}${cspath}`, ruleId, false, false, 'update');
+    let res = await csapi.smartdoctype_rule_generatedocument_save(`${cshost}${cspath}`, ruleId, false, false, 'update');
 
     // delete 'document generation' tab in rule
-    let res = csapi.smartdoctype_rule_generatedocument_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_generatedocument_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'allow upload' tab in rule
-    let res = csapi.smartdoctype_rule_allowupload_save(`${cshost}${cspath}`, ruleId, [2001], 'add');
+    let res = await csapi.smartdoctype_rule_allowupload_save(`${cshost}${cspath}`, ruleId, [2001], 'add');
 
     // update 'allow upload' tab in rule
-    let res = csapi.smartdoctype_rule_allowupload_save(`${cshost}${cspath}`, ruleId, [2001,120593], 'update');
+    let res = await csapi.smartdoctype_rule_allowupload_save(`${cshost}${cspath}`, ruleId, [2001,120593], 'update');
 
     // delete 'allow upload' tab in rule
-    let res = csapi.smartdoctype_rule_allowupload_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_allowupload_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'upload approval' tab in rule
-    let res = csapi.smartdoctype_rule_uploadapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 2001 }], 'add');
+    let res = await csapi.smartdoctype_rule_uploadapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 2001 }], 'add');
 
     // update 'upload approval tab in rule
-    let res = csapi.smartdoctype_rule_uploadapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 120593 }], 'update');
+    let res = await csapi.smartdoctype_rule_uploadapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 120593 }], 'update');
 
     // delete 'upload approval' tab in rule
-    let res = csapi.smartdoctype_rule_uploadapproval_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_uploadapproval_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'reminder' tab in rule
     // be sure that user/oauth client has enough permissions: otherwise you will get an exception: check volume Reminders:Successfactors Client or Standard Client - Failed to add Bot "reminder" on template.
-    let res = csapi.smartdoctype_rule_reminder_save(`${cshost}${cspath}`, 11, true, 'add');
+    let res = await csapi.smartdoctype_rule_reminder_save(`${cshost}${cspath}`, 11, true, 'add');
 
     // update 'reminder' tab in rule
-    let res = csapi.smartdoctype_rule_reminder_save(`${cshost}${cspath}`, 11, true, 'update');
+    let res = await csapi.smartdoctype_rule_reminder_save(`${cshost}${cspath}`, 11, true, 'update');
 
     // delete 'reminder' tab in rule
-    let res = csapi.smartdoctype_rule_reminder_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_reminder_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'review upload' tab in rule
-    let res = csapi.smartdoctype_rule_reviewuploads_save(`${cshost}${cspath}`, 11, true, 'Test Review', [2001], 'add');
+    let res = await csapi.smartdoctype_rule_reviewuploads_save(`${cshost}${cspath}`, 11, true, 'Test Review', [2001], 'add');
 
     // update 'review upload' tab in rule
-    let res = csapi.smartdoctype_rule_reviewuploads_save(`${cshost}${cspath}`, 11, false, 'Test Review', [2001], 'update');
+    let res = await csapi.smartdoctype_rule_reviewuploads_save(`${cshost}${cspath}`, 11, false, 'Test Review', [2001], 'update');
 
     // delete 'review upload' tab in rule
-    let res = csapi.smartdoctype_rule_reviewuploads_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_reviewuploads_delete(`${cshost}${cspath}`, ruleId);
 
     // add 'allow delete' tab in rule
-    let res = csapi.smartdoctype_rule_allowdelete_save(`${cshost}${cspath}`, 11, [2001], 'add');
+    let res = await csapi.smartdoctype_rule_allowdelete_save(`${cshost}${cspath}`, 11, [2001], 'add');
 
     // update 'allow delete' tab in rule
-    let res = csapi.smartdoctype_rule_allowdelete_save(`${cshost}${cspath}`, 11, [2001,120593], 'update');
+    let res = await csapi.smartdoctype_rule_allowdelete_save(`${cshost}${cspath}`, 11, [2001,120593], 'update');
 
     // delete 'allow delete' tab in rule
-    let res = csapi.smartdoctype_rule_allowdelete_delete(`${cshost}${cspath}`, 11);
+    let res = await csapi.smartdoctype_rule_allowdelete_delete(`${cshost}${cspath}`, 11);
 
     // add 'delete approval' tab in rule
-    let res = csapi.smartdoctype_rule_deletewithapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 2001 }], 'add');
+    let res = await csapi.smartdoctype_rule_deletewithapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 2001 }], 'add');
 
     // update 'delete approval' tab in rule
-    let res = csapi.smartdoctype_rule_deletewithapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 120593 }], 'update');
+    let res = await csapi.smartdoctype_rule_deletewithapproval_save(`${cshost}${cspath}`, ruleId, true, workflowMapId, [{'wfrole': 'Approver', 'member': 120593 }], 'update');
 
     // delete 'delete approval' tab in rule
-    let res = csapi.smartdoctype_rule_deletewithapproval_delete(`${cshost}${cspath}`, ruleId);
+    let res = await csapi.smartdoctype_rule_deletewithapproval_delete(`${cshost}${cspath}`, ruleId);
 ```
 
 ## Business Workspace Functions
 ```js
     // get business workspace node id by business object type and business object id
-    let res = csapi.businessworkspace_search(`${cshost}${cspath}`, 'SuccessFactors', 'sfsf:user', 'Z70080539', 1);
+    let res = await csapi.businessworkspace_search(`${cshost}${cspath}`, 'SuccessFactors', 'sfsf:user', 'Z70080539', 1);
 
     // get customized smart document types for business workspace
     // bws_id from businessworkspace_search()
-    let res = csapi.businessworkspace_smartdoctypes_get(`${cshost}${cspath}`, bws_id);
+    let res = await csapi.businessworkspace_smartdoctypes_get(`${cshost}${cspath}`, bws_id);
     // [{'classification_id': 120571, 'classification_name': 'Application Documents', 'classification_description': '', 'category_id': 6002, 'location': '122061:122063', 'document_generation': 0, 'required': 0, 'template_id': 120576}, ...]
     
     // get category definition for smart document type to be used for document upload into business workspace
     // bws_id from businessworkspace_search()
     // cat_id from businessworkspace_smartdoctypes_get()
-    let res = csapi.businessworkspace_categorydefinition_for_upload_get(`${cshost}${cspath}`, bws_id, cat_id);
+    let res = await csapi.businessworkspace_categorydefinition_for_upload_get(`${cshost}${cspath}`, bws_id, cat_id);
 
     // upload file using smart document type into business workspace
-    let res = csapi.businessworkspace_hr_upload_file(`${cshost}${cspath}`, bws_id, '/home/fitsch/Downloads', 'test-download.pdf', 'application.pdf', class_dict['classification_id'], cat_id, cat_dict);
+    let res = await csapi.businessworkspace_hr_upload_file(`${cshost}${cspath}`, bws_id, '/home/fitsch/Downloads', 'test-download.pdf', 'application.pdf', class_dict['classification_id'], cat_id, cat_dict);
     
     //### ########################## #####
     //### snippet for upload process #####
@@ -503,19 +503,19 @@ mainProg();
 ## WebReport Functions
 ```js
     // call web report by nickname using parameters
-    let res = csapi.webreport_nickname_call(`${cshost}${cspath}`, 'WR_API_Test', {'p_name': 'name', 'p_desc': 'description'});
+    let res = await csapi.webreport_nickname_call(`${cshost}${cspath}`, 'WR_API_Test', {'p_name': 'name', 'p_desc': 'description'});
 
     // call web report by node id using parameters
-    let res = csapi.webreport_nodeid_call(`${cshost}${cspath}`, wr_id, {'p_name': 'name', 'p_desc': 'description'});
+    let res = await csapi.webreport_nodeid_call(`${cshost}${cspath}`, wr_id, {'p_name': 'name', 'p_desc': 'description'});
 ```
 
 ## Server Information Functions
 ```js
     // ping Content Server
-    let res = csapi.ping(`${cshost}${cspath}`);
+    let res = await csapi.ping(`${cshost}${cspath}`);
 
     // get server info (version, metadata languages, ...)
-    let res = csapi.server_info(`${cshost}${cspath}`);
+    let res = await csapi.server_info(`${cshost}${cspath}`);
     console.log(`Version: ${res['server']['version']}`);
     console.log('Metadata Languages:');
     for (let i=0; i<res['server']['metadata_languages'].length; i++) {

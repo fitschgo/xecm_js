@@ -1,7 +1,7 @@
 {
   "name": "xecm",
-  "version": "25.2.0",
-  "description": "Simple NodeJS library to call Opentext Extended ECM REST API",
+  "version": "25.2.1",
+  "description": "Simple NodeJS library to call Opentext Extended ECM REST API - without any 3rd party modules.",
   "main": "CSRestAPI.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
